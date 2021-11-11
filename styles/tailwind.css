@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	@font-face {
+		font-family: 'Inter-Bold';
+		src: local('Inter'), local('Inter Bold'), local('Inter-Bold'),
+			url(/fonts/Inter-Bold.ttf) format('truetype');
+		font-weight: 'bold';
+	}
+	@font-face {
+		font-family: 'Inter-SemiBold';
+		src: local('Inter'), local('Inter SemiBold'), local('Inter-SemiBold'),
+			url(/fonts/Inter-SemiBold.ttf) format('truetype');
+		font-weight: 'semibold';
+	}
+	@font-face {
+		font-family: 'Inter';
+		src: local('Inter'), local('Inter Regular'), local('Inter-Regular'),
+			url(/fonts/Inter-Regular.ttf) format('truetype');
+		font-weight: 'regular';
+	}
+
+	html {
+		@apply text-white m-0 p-0 text-sm;
+		scroll-behavior: smooth;
+	}
+
+	@media (min-width: 420px) {
+		html {
+			font-size: 1rem;
+		}
+	}
+
+	h1 {
+		@apply text-5xl font-display font-bold tracking-tight leading-snug mb-4;
+	}
+
+	h2 {
+		@apply text-4xl font-display font-bold leading-snug mb-4;
+	}
+
+	h3 {
+		@apply text-3xl font-display font-bold leading-snug mb-4;
+	}
+
+	h4 {
+		@apply text-xl font-sans font-bold leading-snug tracking-tight mb-4;
+	}
+	h6 {
+		@apply text-lg font-sans font-bold leading-snug tracking-tight mb-4;
+	}
+
+	p,
+	blockquote {
+		@apply font-sans text-lg leading-snug tracking-wide font-normal;
+	}
+
+	a {
+		@apply font-sans text-base leading-relaxed tracking-wide;
+	}
+
+	article p {
+		@apply leading-8 tracking-normal;
+	}
+
+	small {
+		@apply font-sans text-sm leading-relaxed font-medium tracking-wide;
+	}
+
+	.card-badge {
+		@apply px-3 py-0.5 mt-1 w-1/2 rounded-full bg-gradient-to-r from-blue-600 to-blue-700;
+	}
+
+	.card-subtitle {
+		@apply font-sans text-sm leading-relaxed text-white text-opacity-70 font-medium tracking-wide;
+	}
+
+	.card-title {
+		@apply pt-3 font-medium text-lg leading-relaxed tracking-wide;
+	}
+
+	.card {
+		@apply max-w-sm relative m-4 rounded tracking-normal flex flex-col;
+	}
+
+	.input {
+		@apply w-full px-6 py-6 placeholder-white placeholder-opacity-80 bg-white bg-opacity-20 backdrop-filter backdrop-blur-xl shadow-lg rounded-full focus:outline-none;
+	}
+
+	.connect-btn {
+		@apply flex items-center justify-center h-16 w-48 rounded-full bg-indigo-800 hover:bg-indigo-700;
+	}
+
+	.submit-btn {
+		@apply absolute flex items-center justify-center h-14 w-32 bg-indigo-800 rounded-full right-10 bottom-1.5 hover:bg-indigo-700;
+	}
+}
