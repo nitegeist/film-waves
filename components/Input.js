@@ -16,7 +16,7 @@ class Input extends React.Component {
 
 	submitMovie = async (e) => {
 		if (e && this.state.movie) {
-			const contractAddress = '0x9E31B7cb9067f822d3BBC591f698c15aA80a9612';
+			const contractAddress = '0xf6Ce4612Ca89ceFf391AD7475ff907459bA96628';
 			const contractABI = abi.abi;
 			e.preventDefault();
 			try {

@@ -17,7 +17,11 @@ export default function Card({ movie: { img, movie, genre, year } }) {
 					{genre} &bull; {year}
 				</small>
 				<span className='card-badge'>
-					<small>0x74692283...</small>
+					<small>
+						{'0x8de806462823aD25056eE8104101F9367E208C14'.substr(0, 6) +
+							'...' +
+							'0x8de806462823aD25056eE8104101F9367E208C14'.substr(38)}
+					</small>
 				</span>
 			</div>
 		</>
