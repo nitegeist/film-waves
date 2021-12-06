@@ -1,7 +1,4 @@
-import { ethers } from 'ethers';
 import React from 'react';
-import abi from '../utils/MovieContract.json';
-
 class Input extends React.Component {
 	constructor(props) {
 		super(props);
@@ -14,36 +11,16 @@ class Input extends React.Component {
 		this.setState({ movie: e.target.value });
 	}
 
-	submitMovie = async (e) => {
+	submitMovie = (e) => {
 		if (e && this.state.movie) {
-			const contractAddress = '0xf6Ce4612Ca89ceFf391AD7475ff907459bA96628';
-			const contractABI = abi.abi;
 			e.preventDefault();
-			try {
-				const { ethereum } = window;
-
-				if (ethereum) {
-					const provider = new ethers.providers.Web3Provider(ethereum);
-					const signer = provider.getSigner();
-					const movieContract = new ethers.Contract(contractAddress, contractABI, signer);
-					const movieTxn = await movieContract.submitMovie(this.state.movie);
-					console.log('Mining...', movieTxn.hash);
-					await movieTxn.wait();
-					console.log('Mined -- ', movieTxn.hash);
-					let count = await movieContract.getUserMovieCount(this.props.account);
-					console.log('Total number of movies for %s is %s', this.props.account, count.toNumber());
-				} else {
-					console.log("Ethereum object doesn't exist!");
-				}
-			} catch (error) {
-				console.log(error);
-			}
+			this.props.onSubmit(this.state.movie);
 			this.setState({ movie: '' });
 		}
 	};
 	render() {
 		return (
-			<>
+			<form className='relative flex items-center' onSubmit={this.submitMovie}>
 				<div className='w-full'>
 					<input
 						type='text'
@@ -54,11 +31,11 @@ class Input extends React.Component {
 					/>
 				</div>
 				<div>
-					<button type='submit' onClick={this.submitMovie} className='submit-btn'>
+					<button type='submit' className='submit-btn'>
 						Submit
 					</button>
 				</div>
-			</>
+			</form>
 		);
 	}
 }

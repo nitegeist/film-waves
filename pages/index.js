@@ -1,10 +1,12 @@
+import { ethers } from 'ethers';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import Card from '../components/Card';
 import Input from '../components/Input';
 import { myMovies, userMovies } from '../utils/data';
+import abi from '../utils/MovieContract.json';
 
-export default function Home() {
+export default function Home({ apiKey }) {
 	const [currentAccount, setCurrentAccount] = useState('');
 
 	const checkIfWalletIsConnected = async () => {
@@ -53,6 +55,43 @@ export default function Home() {
 		}
 	};
 
+	const handleSubmit = async (movie) => {
+		try {
+			const contractAddress = '0xf6Ce4612Ca89ceFf391AD7475ff907459bA96628';
+			const contractABI = abi.abi;
+			const { ethereum } = window;
+
+			if (ethereum) {
+				const provider = new ethers.providers.Web3Provider(ethereum);
+				const signer = provider.getSigner();
+				const movieContract = new ethers.Contract(contractAddress, contractABI, signer);
+				const movieTxn = await movieContract.submitMovie(movie);
+				console.log('Mining...', movieTxn.hash);
+				await movieTxn.wait();
+				console.log('Mined -- ', movieTxn.hash);
+				let userCount = await movieContract.getUserMovieCount(currentAccount);
+				console.log('Total number of movies for %s is %s', currentAccount, userCount.toNumber());
+				let movieCount = await movieContract.getTotalMovieCount();
+				console.log('Total number of movies is %s', currentAccount, movieCount.toNumber());
+				await getMovieData(movie);
+			} else {
+				console.log("Ethereum object doesn't exist!");
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	const getMovieData = async (movie) => {
+		try {
+			const res = await fetch(`http://www.omdbapi.com/?apikey=${apiKey}&t=${movie.trim().replace(' ', '+')}`);
+			const data = await res.json();
+			console.log(data);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	useEffect(() => {
 		checkIfWalletIsConnected();
 	}, []);
@@ -78,13 +117,13 @@ export default function Home() {
 								action/fighting films. Here are two of my favorites, now send me yours!
 							</p>
 						</article>
-						<div className='relative flex items-center pt-10 pr-8'>
+						<div className='pt-10 pr-8'>
 							{!currentAccount ? (
 								<button type='button' onClick={connectWallet} className='connect-btn'>
 									Connect Wallet
 								</button>
 							) : (
-								<Input account={currentAccount} />
+								<Input onSubmit={handleSubmit} />
 							)}
 						</div>
 					</div>
@@ -102,4 +141,11 @@ export default function Home() {
 			</footer>
 		</div>
 	);
+}
+export async function getStaticProps() {
+	return {
+		props: {
+			apiKey: process.env.API_KEY,
+		},
+	};
 }

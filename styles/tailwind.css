@@ -94,6 +94,6 @@
 	}
 
 	.submit-btn {
-		@apply absolute flex items-center justify-center h-14 w-32 bg-indigo-800 rounded-full right-10 bottom-1.5 hover:bg-indigo-700;
+		@apply absolute flex items-center justify-center h-14 w-32 bg-indigo-800 rounded-full right-2 bottom-1.5 hover:bg-indigo-700;
 	}
 }
