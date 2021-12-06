@@ -3,12 +3,12 @@ import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import Card from '../components/Card';
 import Input from '../components/Input';
-import { myMovies, userMovies } from '../utils/data';
+import { myMovies } from '../utils/data';
 import abi from '../utils/MovieContract.json';
 
-export default function Home({ apiKey }) {
+export default function Home({ apiKey, contract }) {
 	const [currentAccount, setCurrentAccount] = useState('');
-
+	const [movies, setMovies] = useState([]);
 	const checkIfWalletIsConnected = async () => {
 		try {
 			const { ethereum } = window;
@@ -56,37 +56,23 @@ export default function Home({ apiKey }) {
 	};
 
 	const handleSubmit = async (movie) => {
-		try {
-			const contractAddress = '0xf6Ce4612Ca89ceFf391AD7475ff907459bA96628';
-			const contractABI = abi.abi;
-			const { ethereum } = window;
-
-			if (ethereum) {
-				const provider = new ethers.providers.Web3Provider(ethereum);
-				const signer = provider.getSigner();
-				const movieContract = new ethers.Contract(contractAddress, contractABI, signer);
-				const movieTxn = await movieContract.submitMovie(movie);
-				console.log('Mining...', movieTxn.hash);
-				await movieTxn.wait();
-				console.log('Mined -- ', movieTxn.hash);
-				let userCount = await movieContract.getUserMovieCount(currentAccount);
-				console.log('Total number of movies for %s is %s', currentAccount, userCount.toNumber());
-				let movieCount = await movieContract.getTotalMovieCount();
-				console.log('Total number of movies is %s', currentAccount, movieCount.toNumber());
-				await getMovieData(movie);
-			} else {
-				console.log("Ethereum object doesn't exist!");
-			}
-		} catch (error) {
-			console.error(error);
-		}
+		const data = await getMovieData(movie);
+		const movieTxn = await contract.submitMovie(data.Title, data.Genre, data.Poster, data.Year);
+		console.log('Mining...', movieTxn.hash);
+		await movieTxn.wait();
+		console.log('Mined -- ', movieTxn.hash);
+		movies = await contract.getAllMovies();
+		let userCount = await contract.getUserMovieCount(currentAccount);
+		console.log('Total number of movies for %s is %s', currentAccount, userCount.toNumber());
+		let movieCount = await contract.getTotalMovieCount();
+		console.log('Total number of movies is %s', currentAccount, movieCount.toNumber());
 	};
 
 	const getMovieData = async (movie) => {
 		try {
 			const res = await fetch(`http://www.omdbapi.com/?apikey=${apiKey}&t=${movie.trim().replace(' ', '+')}`);
 			const data = await res.json();
-			console.log(data);
+			return data;
 		} catch (error) {
 			console.error(error);
 		}
@@ -94,10 +80,16 @@ export default function Home({ apiKey }) {
 
 	useEffect(() => {
 		checkIfWalletIsConnected();
-	}, []);
+		const init = async () => {
+			const movies = await contract.getAllMovies();
+			setMovies(movies);
+			console.log(movies);
+		};
+		init();
+	}, [contract]);
 
 	const myFavorites = myMovies.map((movie, index) => <Card key={index} movie={movie} />);
-	const userFavorites = userMovies.map((movie, index) => <Card key={index} movie={movie} />);
+	const userFavorites = movies.map((movie, index) => <Card key={index} movie={movie} />);
 
 	return (
 		<div className='bg-gradient-to-br from-purple-700 via-indigo-800 to-indigo-900'>
@@ -143,9 +135,26 @@ export default function Home({ apiKey }) {
 	);
 }
 export async function getStaticProps() {
+	const movieContract = null;
+	try {
+		const contractAddress = '0x680d0a8a38cF6D97609BAD3246f46603f51336Bc';
+		const contractABI = abi.abi;
+		const { ethereum } = window;
+
+		if (ethereum) {
+			const provider = new ethers.providers.Web3Provider(ethereum);
+			const signer = provider.getSigner();
+			movieContract = new ethers.Contract(contractAddress, contractABI, signer);
+		} else {
+			console.log("Ethereum object doesn't exist!");
+		}
+	} catch (error) {
+		console.error(error);
+	}
 	return {
 		props: {
 			apiKey: process.env.API_KEY,
+			contract: movieContract,
 		},
 	};
 }

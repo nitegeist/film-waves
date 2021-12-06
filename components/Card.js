@@ -1,10 +1,10 @@
 import Image from 'next/image';
-export default function Card({ movie: { img, movie, genre, year } }) {
+export default function Card({ movie: { account, image, title, genre, year } }) {
 	return (
 		<>
 			<div className='card'>
 				<Image
-					src={img}
+					src={image}
 					className='object-cover absolute h-full w-full inset-0 rounded'
 					layout='fixed'
 					width='256'
@@ -12,16 +12,12 @@ export default function Card({ movie: { img, movie, genre, year } }) {
 					draggable='false'
 					alt='Old Henry'
 				/>
-				<p className='card-title'>{movie}</p>
+				<p className='card-title'>{title}</p>
 				<small className='card-subtitle'>
 					{genre} &bull; {year}
 				</small>
 				<span className='card-badge'>
-					<small>
-						{'0x8de806462823aD25056eE8104101F9367E208C14'.substr(0, 6) +
-							'...' +
-							'0x8de806462823aD25056eE8104101F9367E208C14'.substr(38)}
-					</small>
+					<small>{account.substr(0, 6) + '...' + account.substr(38)}</small>
 				</span>
 			</div>
 		</>
