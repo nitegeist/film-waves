@@ -81,7 +81,7 @@ export default function Home({ apiKey, contract }) {
 	useEffect(() => {
 		checkIfWalletIsConnected();
 		const init = async () => {
-			const movies = await contract.getAllMovies();
+			const movies = contract ? await contract.getAllMovies() : [];
 			setMovies(movies);
 			console.log(movies);
 		};
@@ -124,8 +124,14 @@ export default function Home({ apiKey, contract }) {
 					</div>
 				</div>
 				<div className='pt-10 px-6'>
-					<p className='font-semibold'>User Recommendations &rarr;</p>
-					<div className='flex flex-wrap items-center justify-center md:justify-start'>{userFavorites}</div>
+					{userFavorites.length > 0 ? (
+						<>
+							<p className='font-semibold'>User Recommendations &rarr;</p>
+							<div className='flex flex-wrap items-center justify-center md:justify-start'>{userFavorites}</div>
+						</>
+					) : (
+						<p className='font-semibold'>No User Recommendations...</p>
+					)}
 				</div>
 			</main>
 			<footer className='p-12 text-center'>

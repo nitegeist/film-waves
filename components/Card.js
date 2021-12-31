@@ -10,15 +10,19 @@ export default function Card({ movie: { account, image, title, genre, year } }) 
 					width='256'
 					height='256'
 					draggable='false'
-					alt='Old Henry'
+					alt={title}
 				/>
 				<p className='card-title'>{title}</p>
 				<small className='card-subtitle'>
 					{genre} &bull; {year}
 				</small>
-				<span className='card-badge'>
-					<small>{account.substr(0, 6) + '...' + account.substr(38)}</small>
-				</span>
+				{account ? (
+					<span className='card-badge'>
+						<small>{account.substr(0, 6) + '...' + account.substr(38)}</small>
+					</span>
+				) : (
+					''
+				)}
 			</div>
 		</>
 	);
