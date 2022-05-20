@@ -143,7 +143,7 @@ export default function Home({ apiKey, contract }) {
 export async function getStaticProps() {
 	const movieContract = null;
 	try {
-		const contractAddress = '0x680d0a8a38cF6D97609BAD3246f46603f51336Bc';
+		const contractAddress = '0xD8b5B9B782c512592B8C0177C3B1feE81b3f7e28';
 		const contractABI = abi.abi;
 		const { ethereum } = window;
 
